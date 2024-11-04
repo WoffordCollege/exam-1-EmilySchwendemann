@@ -113,8 +113,20 @@ public class ConnectFour {
      */
     public Location getTopOfColumn(int column) {
         // Question 1
-        // TODO
-        
+        String col = getColumnAsString(column);
+        int colLength = col.length();
+        if (colLength >=1) {
+            for (int i = 0; i < col.length(); i++) {
+                if (i==colLength-1){
+                    if (col.charAt(i)=='R') {
+                        return Location.RED;
+                    }
+                    else if (col.charAt(i)=='B') {
+                        return Location.BLACK;
+                    }
+                }
+            }
+        }
         return Location.EMPTY;
     }
     
@@ -128,8 +140,13 @@ public class ConnectFour {
      */
     public int getHeightOfColumn(int column) {
         // Question 2
-        // TODO
-        
+        String col = getColumnAsString(column);
+        int colLength = col.length();
+        if (colLength >=1) {
+            int red = col.length() - col.replace("R", "").length();
+            int black = col.length() - col.replace("B", "").length();
+            return red+black;
+        }
         return 0;
     }
     
@@ -145,9 +162,31 @@ public class ConnectFour {
      */
     public void dropToken(int column) {
         // Question 3
-        // TODO
-        
-    }
+        if (redTurn == true) {
+            try{
+                if (column < 6 || column >= 0) {
+                    int row = getHeightOfColumn(column);
+                    setLocation(row, column, Location.RED);
+                }
+                redTurn = false;
+            }
+            catch(ColumnFullException e){
+            redTurn = true;
+            }
+        }
+        if (redTurn == false) {
+            try{
+                if (column < 6 || column >= 0) {
+                    int row = getHeightOfColumn(column);
+                    setLocation(row, column, Location.BLACK);
+                }
+                redTurn = true;
+            }
+            catch(ColumnFullException e){
+            redTurn = false;
+            }
+        }
+    }     
     
     /**
      * This method returns the current result of the game. If the
@@ -169,8 +208,14 @@ public class ConnectFour {
         //       this class to determine whether someone has won 
         //       along a column.
         
-        // TODO
-        
+        for (int i = 0; i < 6; i++) {
+            if ((getColumnAsString(i).length() - getColumnAsString(i).replace("RRRR", "").length()) == (getColumnAsString(i).length()-4)) {
+                return Result.REDWIN;
+            }
+            else if ((getColumnAsString(i).length() - getColumnAsString(i).replace("BBBB", "").length()) == (getColumnAsString(i).length()-4)) {
+                return Result.BLACKWIN;
+            }
+        }
         return Result.NONE;
     }
     
@@ -192,10 +237,24 @@ public class ConnectFour {
      */
     public String toString() {
         // Question 5
-        // TODO
-        
-        return "";
+        String string = "";
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                if (getLocation(i, j) == Location.EMPTY) {
+                    string+="| ";
+                }
+                if (getLocation(i, j) == Location.RED) {
+                    string+="|R";
+                }
+                if (getLocation(i, j) == Location.BLACK) {
+                    string+="|B";
+                }
+                else if (j == 5) {
+                    string+="|\n";
+                }
+            }
+        }
+        string+= "---------------";
+        return string;
     }
-
-
 }
